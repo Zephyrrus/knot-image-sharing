@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const RateLimit = require('express-rate-limit');
 const db = require('knex')(config.database);
 const fs = require('fs');
-const exphbs = require('express-handlebars');
 const safe = express();
 const nunjucks = require('nunjucks');
 
