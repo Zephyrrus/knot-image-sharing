@@ -7,6 +7,9 @@ migration.start = async () => {
 		table.dateTime('editedAt');
 		table.dateTime('zipGeneratedAt');
 	});
+	await db.schema.table('users', table => {
+		table.integer('admin')
+	})
 	console.log('Migration finished! Now start lolisafe normally');
 };
 

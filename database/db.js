@@ -8,6 +8,8 @@ let init = function(db){
 		table.string('identifier')
 		table.integer('enabled')
 		table.integer('timestamp')
+		table.integer('editedAt').defaultTo(0)
+		table.integer('zipGeneratedAt').defaultTo(0)
 	}).then(() => {})
 
 	db.schema.createTableIfNotExists('files', function (table) {
@@ -29,6 +31,7 @@ let init = function(db){
 		table.string('password')
 		table.string('token')
 		table.integer('timestamp')
+		table.integer('admin')
 	}).then(() => {
 		db.table('users').where({username: 'root'}).then((user) => {
 			if(user.length > 0) return
