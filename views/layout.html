@@ -1,0 +1,55 @@
+{% import '_globals.html' as globals %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="description" content="{{globals.domain_descr}}">
+    <meta name="keywords" content="upload,{{globals.domain_name}},file,images,hosting">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{globals.domain_root}}/images/icons/apple-touch-icon.png?v=XBreOJMe24">
+    <link rel="icon" type="image/png" href="{{globals.domain_root}}/images/icons/favicon-32x32.png?v=XBreOJMe24" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{globals.domain_root}}/images/icons/favicon-16x16.png?v=XBreOJMe24" sizes="16x16">
+    <link rel="manifest" href="{{globals.domain_root}}/images/icons/manifest.json?v=XBreOJMe24">
+    <link rel="mask-icon" href="{{globals.domain_root}}/images/icons/safari-pinned-tab.svg?v=XBreOJMe24" color="#5bbad5">
+    <link rel="shortcut icon" href="{{globals.domain_root}}/images/icons/favicon.ico?v=XBreOJMe24">
+    <meta name="apple-mobile-web-app-title" content="{{globals.domain_name}}">
+    <meta name="application-name" content="{{globals.domain_name}}">
+    <meta name="msapplication-config" content="{{globals.domain_root}}/images/icons/browserconfig.xml?v=XBreOJMe24">
+    <meta name="theme-color" content="#232629">
+
+    {% block meta %}
+    	<meta property="og:url" content="{{globals.domain_root}}" />
+      <meta property="og:type" content="website" />
+      <meta property="og:title" content="{{globals.domain_name}} | {{globals.domain_motto}}" />
+      <meta property="og:description" content="{{globals.domain_descr}}" />
+      <meta property="og:image" content="{{globals.domain_root}}/images/logo_square.png" />
+      <meta property="og:image:secure_url" content="{{globals.domain_root}}/images/logo_square.png" />
+      <meta property="og:locale" content="en_US" />
+
+      <meta name="twitter:card" content="summary">
+      <meta name="twitter:title" content="{{globals.domain_name}} | {{globals.domain_motto}}">
+      <meta name="twitter:description" content="{{globals.domain_descr}}">
+      <meta name="twitter:image" content="{{globals.domain_root}}/files/images/logo_square.png">
+      <meta name="twitter:image:src" content="{{globals.domain_root}}e/images/logo_square.png">
+    {% endblock %}
+
+    <title>
+      {% if title %}
+        {{ title }}
+      {% else %}
+        {{globals.domain_name}} | {{globals.domain_motto}}
+      {% endif %}
+      </title>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.3.0/css/bulma.min.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.15.3/axios.min.js"></script>
+</head>
+<body>
+  {% block content %} {% endblock %}
+  {% block footer %} {% endblock %}
+</body>
+</html>

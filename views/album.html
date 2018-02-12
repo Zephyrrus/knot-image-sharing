@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block meta %}
+	<meta property="og:url" content="{{globals.domain_root}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ title }} | {{ count }} files" />
+    <meta property="og:description" content="{{globals.domain_descr}}" />
+    <meta property="og:image" content="{{ thumb }}" />
+    <meta property="og:image:secure_url" content="{{ thumb }}" />
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ title }} | {{ count }} files">
+    <meta name="twitter:description" content="{{globals.domain_descr}}">
+    <meta name="twitter:image" content="{{ thumb }}">
+    <meta name="twitter:image:src" content="{{ thumb }}">
+{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight">
+	<div class="hero-head">
+		<div class="container">
+			<div class="columns">
+				<div class="column is-9">
+					<h1 class="title" id='title' style='margin-top: 1.5rem;'>{{ title }}</h1>
+					<h1 class="subtitle" id='count'>{{ count }} files</h1>
+				</div>
+				<div class="column is-3" style="text-align: right; padding-top: 45px;">
+					{% if enableDownload %}
+						<a class="button is-primary is-outlined" title="Download album" href="/api/album/zip/{{ identifier }}">Download Album</a>
+					{% endif %}
+				</div>
+			</div>
+			<hr>
+		</div>
+	</div>
+	<div class="hero-body">
+		<div class="container" id='container'>
+			<div class="columns is-multiline is-mobile" id="table">
+				{% for f in files %}
+				<div class="column is-2">
+					<a href="{{ f.file }}" target="_blank">{{ f.thumb }}</a>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

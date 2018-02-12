@@ -8,6 +8,7 @@ const Zip = require('jszip');
 const albumsController = {};
 
 albumsController.list = async (req, res, next) => {
+	const albumDomain = config.cdnDomain || config.domain;
 	const user = await utils.authorize(req, res);
 
 	const fields = ['id', 'name'];
@@ -26,7 +27,7 @@ albumsController.list = async (req, res, next) => {
 		album.date = new Date(album.timestamp * 1000)
 		album.date = utils.getPrettyDate(album.date)
 
-		album.identifier = `${config.domain}/a/${album.identifier}`;
+		album.identifier = `${albumDomain}/a/${album.identifier}`
 		ids.push(album.id);
 	}
 
@@ -63,7 +64,9 @@ albumsController.create = async (req, res, next) => {
 		enabled: 1,
 		userid: user.id,
 		identifier: randomstring.generate(8),
-		timestamp: Math.floor(Date.now() / 1000)
+		timestamp: Math.floor(Date.now() / 1000),
+		editedAt: 0,
+		zipGeneratedAt: 0
 	});
 
 	return res.json({ success: true });

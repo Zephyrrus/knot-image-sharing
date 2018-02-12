@@ -9,6 +9,7 @@ const db = require('knex')(config.database);
 const fs = require('fs');
 const exphbs = require('express-handlebars');
 const safe = express();
+const nunjucks = require('nunjucks');
 
 require('./database/db.js')(db);
 
@@ -21,8 +22,13 @@ fs.existsSync('./' + config.uploads.folder + '/zips') || fs.mkdirSync('./' + con
 safe.use(helmet());
 safe.set('trust proxy', 1);
 
-safe.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-safe.set('view engine', 'handlebars');
+//safe.engine('pug', exphbs({ defaultLayout: 'main' }));
+
+nunjucks.configure('views', {
+    autoescape: true,
+    express: safe
+});
+safe.set('view engine', 'html');
 safe.enable('view cache');
 
 let limiter = new RateLimit({ windowMs: 5000, max: 2 });
@@ -46,9 +52,12 @@ for (let page of config.pages) {
 		root = './pages/custom/';
 	}
 	if (page === 'home') {
-		safe.get('/', (req, res, next) => res.sendFile(`${page}.html`, { root: root }));
+		//safe.get('/', (req, res, next) => res.sendFile(`${page}.html`, { root: root }));
+		safe.get('/', (req, res, next) => res.render('home'))
 	} else {
-		safe.get(`/${page}`, (req, res, next) => res.sendFile(`${page}.html`, { root: root }));
+		//safe.get(`/${page}`, (req, res, next) => res.sendFile(`${page}.html`, { root: root }));
+		console.log(page);
+		safe.get(`/${page}`, (req, res, next) => res.render(page))
 	}
 }
 

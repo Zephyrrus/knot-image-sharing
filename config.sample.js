@@ -27,6 +27,11 @@ module.exports = {
 	serveFilesWithNode: false,
 	domain: 'https://lolisafe.moe',
 
+	/*
+		Set to the root of the directory where the images and albums are in case of a different domain for the CDN
+	*/
+	cdnDomain: null,
+
 	// Port on which to run the server
 	port: 9999,
 

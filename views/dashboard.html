@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <section id='auth' class="hero is-light is-fullheight">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Admin dashboard
+                </h1>
+                <h2 class="subtitle">
+                    <p class="control has-addons">
+                        <input id='token' class="input is-danger" type="text" placeholder="Your admin token">
+                        <a id='tokenSubmit' class="button is-danger is-outlined">Check</a>
+                    </p>
+                </h2>
+            </div>
+        </div>
+
+    </section>
+
+    <section id='dashboard' class="section">
+
+        <div id="panel" class="container">
+            <h1 class="title">Dashboard</h1>
+            <h2 class="subtitle">A simple <strong>dashboard</strong>, to sort your uploaded stuff</h2>
+            <hr>
+            <div class="columns">
+                <div class="column is-3">
+                    <aside class="menu" id="menu">
+                        <p class="menu-label">General</p>
+                        <ul class="menu-list">
+                            <li><a href="/">Frontpage</a></li>
+                            <li><a id="itemUploads" onclick="panel.getUploads()">Uploads</a></li>
+                        </ul>
+                        <p class="menu-label">Albums</p>
+                        <ul class="menu-list">
+                            <li><a id="itemManageGallery" onclick="panel.getAlbums()">Manage your albums</a></li>
+                            <li>
+                                <ul id='albumsContainer'></ul>
+                            </li>
+                        </ul>
+                        <p class="menu-label">Administration</p>
+                        <ul class="menu-list">
+                            <li><a id="itemTokens" onclick="panel.changeToken()">Change your token</a></li>
+                            <li><a id="itemPassword" onclick="panel.changePassword()">Change your password</a></li>
+                            <li><a id="itemLogout"onclick="panel.logout()">Logout</a></li>
+                        </ul>
+                    </aside>
+                </div>
+                <div class="column has-text-centered" id='page'>
+                    <img src="/images/logo.png">
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}
+
+{% block footer %}
+    <script type="text/javascript" src="js/dashboard.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/dashboard.css">
+{% endblock %}
+
+

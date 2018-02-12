@@ -5,10 +5,10 @@
   "author": "Pitu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WeebDev/lolisafe"
+    "url": "https://github.com/Zephyrrus/lolisafe"
   },
   "bugs": {
-    "url": "https://github.com/WeebDev/loli-safe/issues"
+    "url": "https://github.com/Zephyrrus/lolisafe/issues"
   },
   "engines": {
     "node": ">=7.0.0"
@@ -18,7 +18,6 @@
     "bcrypt": "^1.0.3",
     "body-parser": "^1.16.0",
     "express": "^4.14.0",
-    "express-handlebars": "^3.0.0",
     "express-rate-limit": "^2.6.0",
     "fluent-ffmpeg": "^2.1.0",
     "gm": "^1.23.0",
@@ -26,6 +25,7 @@
     "jszip": "^3.1.4",
     "knex": "^0.12.6",
     "multer": "^1.2.1",
+    "nunjucks": "^3.0.1",
     "randomstring": "^1.1.5",
     "sqlite3": "^3.1.11"
   },
