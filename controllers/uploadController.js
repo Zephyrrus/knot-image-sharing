@@ -160,6 +160,8 @@ uploadsController.processFilesForDisplay = async (req, res, files, existingFiles
 
 uploadsController.delete = async (req, res) => {
 	const user = await utils.authorize(req, res);
+	if(!user) return;
+	
 	const id = req.body.id;
 	if (id === undefined || id === '') {
 		return res.json({ success: false, description: 'No file specified' });
@@ -215,6 +217,8 @@ uploadsController.deleteFile = function(file) {
 
 uploadsController.list = async (req, res) => {
 	const user = await utils.authorize(req, res);
+
+	if(!user) return;
 
 	let offset = req.params.page;
 	if (offset === undefined) offset = 0;

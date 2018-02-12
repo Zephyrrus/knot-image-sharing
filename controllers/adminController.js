@@ -10,6 +10,8 @@ let adminController = {};
 adminController.getUsers = async (req, res, next) => {
     const user = await utils.authorizeAdmin(req, res);
 
+    if(!user) return;
+
     const fields = ['id', 'username', 'timestamp', 'admin', 'disabled'];
 
     const users = await db.table('users').select(fields);
@@ -25,11 +27,15 @@ adminController.getUsers = async (req, res, next) => {
 adminController.addUser = async (req, res, next) => {
     const user = await utils.authorizeAdmin(req, res);
 
+    if(!user) return;
+
     await authCtrl._addUser(req, res, next);
 }
 
 adminController.disableUser = async (req, res, next) => {
     const user = await utils.authorizeAdmin(req, res);
+
+    if(!user) return;
 
     const userId = req.body.userId;
     if (userId === undefined) return res.json({ success: false, description: 'No userid provided' });
@@ -43,6 +49,8 @@ adminController.disableUser = async (req, res, next) => {
 adminController.enableUser = async (req, res, next) => {
     const user = await utils.authorizeAdmin(req, res);
 
+    if(!user) return;
+    
     const userId = req.body.userId;
     if (userId === undefined) return res.json({ success: false, description: 'No userid provided' });
 

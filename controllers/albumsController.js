@@ -11,6 +11,8 @@ albumsController.list = async (req, res, next) => {
 	const albumDomain = config.cdnDomain || config.domain;
 	const user = await utils.authorize(req, res);
 
+	if(!user) return;
+	
 	const fields = ['id', 'name'];
 	if (req.params.sidebar === undefined) {
 		fields.push('timestamp');
@@ -44,6 +46,8 @@ albumsController.list = async (req, res, next) => {
 albumsController.create = async (req, res, next) => {
 	const user = await utils.authorize(req, res);
 
+	if(!user) return;
+
 	const name = req.body.name;
 	if (name === undefined || name === '') {
 		return res.json({ success: false, description: 'No album name specified' });
@@ -75,6 +79,8 @@ albumsController.create = async (req, res, next) => {
 albumsController.delete = async (req, res, next) => {
 	const user = await utils.authorize(req, res);
 
+	if(!user) return;
+
 	const id = req.body.id;
 	if (id === undefined || id === '') {
 		return res.json({ success: false, description: 'No album specified' });
@@ -86,6 +92,8 @@ albumsController.delete = async (req, res, next) => {
 
 albumsController.rename = async (req, res, next) => {
 	const user = await utils.authorize(req, res);
+
+	if(!user) return;
 
 	const id = req.body.id;
 	if (id === undefined || id === '') {
