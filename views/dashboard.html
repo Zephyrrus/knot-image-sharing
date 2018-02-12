@@ -39,12 +39,20 @@
                                 <ul id='albumsContainer'></ul>
                             </li>
                         </ul>
+                        <div id="adminSidebar">
+                            <p class="menu-label">Administration</p>
+                            <ul class="menu-list">
+                                <li><a id="itemAdminUsers" onclick="panel.getUsers()">Manage Users</a></li>
+                                <li><a id="itemPassword" onclick="panel.changePassword()">Server Info</a></li>
+                            </ul>
+                        </div>
                         <p class="menu-label">User Settings</p>
                         <ul class="menu-list">
                             <li><a id="itemTokens" onclick="panel.changeToken()">Change your token</a></li>
                             <li><a id="itemPassword" onclick="panel.changePassword()">Change your password</a></li>
                             <li><a id="itemLogout"onclick="panel.logout()">Logout</a></li>
                         </ul>
+
                     </aside>
                 </div>
                 <div class="column has-text-centered" id='page'>

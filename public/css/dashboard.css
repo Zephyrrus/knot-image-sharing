@@ -78,3 +78,7 @@ html {
   .menu-list li ul {
     border-left-color: #898b8d;
   }
+
+  .new-user-form input {
+    display: block;
+  }

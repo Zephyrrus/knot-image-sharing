@@ -56,7 +56,6 @@ for (let page of config.pages) {
 		safe.get('/', (req, res, next) => res.render('home'))
 	} else {
 		//safe.get(`/${page}`, (req, res, next) => res.sendFile(`${page}.html`, { root: root }));
-		console.log(page);
 		safe.get(`/${page}`, (req, res, next) => res.render(page))
 	}
 }

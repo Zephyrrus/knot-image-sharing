@@ -15,7 +15,7 @@ authController.verify = async (req, res, next) => {
 
 	const user = await db.table('users').where('username', username).first();
 	if (!user) return res.json({ success: false, description: 'Invalid username or password' });
-
+	if (user.disabled) return res.json({ success: false, description: 'You have been banned from using this service' });
 	bcrypt.compare(password, user.password, (err, result) => {
 		if (err) {
 			console.log(err);
