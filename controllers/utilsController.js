@@ -26,8 +26,10 @@ utilsController.authorize = async (req, res) => {
 	if (token === undefined) return res.status(401).json({ success: false, description: 'No token provided' });
 
 	const user = await db.table('users').where('token', token).first();
-	if (!user) return res.status(401).json({ success: false, description: 'Invalid token' });
-	if (user.disabled) return res.status(401).json({ success: false, description: 'Disabled user' });
+	if (!user) 
+		res.status(401).json({ success: false, description: 'Invalid token' });
+	if (user.disabled) 
+		res.status(401).json({ success: false, description: 'Disabled user' });
 	return user;
 };
 
@@ -36,9 +38,12 @@ utilsController.authorizeAdmin = async (req, res) => {
 	if (token === undefined) return res.status(401).json({ success: false, description: 'No token provided' });
 
 	const user = await db.table('users').where('token', token).first();
-	if (!user) return res.status(401).json({ success: false, description: 'Invalid token' });
-	if (user.disabled) return res.status(401).json({ success: false, description: 'Disabled user' });
-	if (!user.admin) return res.status(401).json({ success: false, description: 'You\'re not allowed in the knot land.' });
+	if (!user) 
+		res.status(401).json({ success: false, description: 'Invalid token' });
+	if (user.disabled) 
+		res.status(401).json({ success: false, description: 'Disabled user' });
+	if (!user.admin) 
+		res.status(401).json({ success: false, description: 'You\'re not allowed in the knot land.' });
 	return user;
 };
 
