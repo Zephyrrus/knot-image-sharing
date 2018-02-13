@@ -635,15 +635,19 @@ panel.getUsers = function () {
 		container.className = "container";
 		container.innerHTML = `
 			<h2 class="subtitle">Create new user</h2>
-
-			<p class="control has-addons has-addons-centered new-user-form">
-				<input id="username_add" class="input" type="text" placeholder="User Name">
-				<input id="password_add" class="input" type="text" placeholder="Password">
-				<a id="submitNewUser" class="button is-primary">Submit</a>
+			<label class="label">Username:</label>
+			<p class="control has-addons has-addons-centered">
+				<input id="username_add" class="input" type="text" placeholder="User Name">	
 			</p>
+			<label class="label">Password:</label>
+			<p class="control has-addons has-addons-centered">
+				<input id="password_add" class="input" type="text" placeholder="Password">
+			</p>
+			<a id="submitNewUser" class="button is-success">Create</a>
 
+			<hr>
 			<h2 class="subtitle">List of users</h2>
-
+			
 			<table class="table is-striped is-narrow">
 				<thead>
 					<tr>
