@@ -155,7 +155,7 @@ uploadsController.processFilesForDisplay = async (req, res, files, existingFiles
 	}
 };
 
-uploadsController.delete = async (req, res) => {
+uploadsController.delete = async (req, res, next) => {
 	const user = await utils.authorize(req, res, next);
 
 	if(!user) return;
@@ -213,7 +213,7 @@ uploadsController.deleteFile = function(file) {
 	});
 };
 
-uploadsController.list = async (req, res) => {
+uploadsController.list = async (req, res, next) => {
 	const user = await utils.authorize(req, res, next);
 
 	if(!user) return;
