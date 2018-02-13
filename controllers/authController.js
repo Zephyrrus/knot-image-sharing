@@ -15,7 +15,7 @@ authController.verify = async (req, res, next) => {
 
 	const user = await db.table('users').where('username', username).first();
 	if (!user) return next({ status: 401, message: 'Invalid username or password' });
-	if (user.disabled) return next({ status: 401, message: 'You have been banned from using this service' });
+	if (user.disabled) return next({ status: 401, message: 'You have been banned from this service' });
 	bcrypt.compare(password, user.password, (err, result) => {
 		if (err) {
 			console.log(err);
@@ -63,8 +63,8 @@ authController._addUser = async (req, res, next) => {
 	if (username === undefined) return next({ status: 401, message: 'No username provided' });
 	if (password === undefined) return next({ status: 401, message: 'No password provided' });
 
-	if (username.length < 4 || username.length > 32) {
-		return next({ status: 401, message: 'Username must have 4-32 characters' })
+	if (username.length < 3 || username.length > 32) {
+		return next({ status: 401, message: 'Username must have 3-32 characters' })
 	}
 	if (password.length < 6 || password.length > 64) {
 		return next({ status: 401, message: 'Password must have 6-64 characters' })
@@ -84,7 +84,8 @@ authController._addUser = async (req, res, next) => {
 			password: hash,
 			token: token,
 			timestamp: Math.floor(Date.now() / 1000),
-			admin: 0
+			admin: 0,
+			disabled: 0
 		});
 		return res.json({ success: true, token: token })
 	});
