@@ -38,7 +38,7 @@
 			<div class="columns is-multiline is-mobile" id="table">
 				{% for f in files %}
 				<div class="column is-2">
-					<a href="{{ f.file }}" target="_blank">{{ f.thumb }}</a>
+					<a href="{{ f.file|safe }}" target="_blank">{{ f.thumb|safe }}</a>
 				</div>
 				{% endfor %}
 			</div>
