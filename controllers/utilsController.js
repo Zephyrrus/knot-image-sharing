@@ -21,29 +21,31 @@ utilsController.getPrettyDate = function(date) {
 		+ date.getSeconds();
 }
 
-utilsController.authorize = async (req, res) => {
+utilsController.authorize = async (req, res, next) => {
 	const token = req.headers.token;
-	if (token === undefined) return res.status(401).json({ success: false, description: 'No token provided' });
+	if (token === undefined) 
+		return next({ status: 401, message: 'No token provided' }) && false;
 
 	const user = await db.table('users').where('token', token).first();
 	if (!user) 
-		res.status(401).json({ success: false, description: 'Invalid token' });
+		return next({ status: 401, message: 'Invalid token' }) && false;
 	if (user.disabled) 
-		res.status(401).json({ success: false, description: 'Disabled user' });
+		return next({ status: 401, message: 'Disabled user' }) && false;
 	return user;
 };
 
-utilsController.authorizeAdmin = async (req, res) => {
+utilsController.authorizeAdmin = async (req, res, next) => {
 	const token = req.headers.token;
-	if (token === undefined) return res.status(401).json({ success: false, description: 'No token provided' });
+	if (token === undefined) 
+		return next({ status: 401, message: 'No token provided' }) && false;
 
 	const user = await db.table('users').where('token', token).first();
 	if (!user) 
-		res.status(401).json({ success: false, description: 'Invalid token' });
+		return next({ status: 401, message: 'Invalid token' }) && false;
 	if (user.disabled) 
-		res.status(401).json({ success: false, description: 'Disabled user' });
+		return next({ status: 401, message: 'Disabled user' }) && false;
 	if (!user.admin) 
-		res.status(401).json({ success: false, description: 'You\'re not allowed in the knot land.' });
+		return next({ status: 401, message: 'You\'re not allowed in the knot land.' }) && false;
 	return user;
 };
 

@@ -8,7 +8,7 @@ const authCtrl = require('./authController.js')
 let adminController = {};
 
 adminController.getUsers = async (req, res, next) => {
-    const user = await utils.authorizeAdmin(req, res);
+    const user = await utils.authorizeAdmin(req, res, next);
 
     if(!user) return;
 
@@ -25,7 +25,7 @@ adminController.getUsers = async (req, res, next) => {
 }
 
 adminController.addUser = async (req, res, next) => {
-    const user = await utils.authorizeAdmin(req, res);
+    const user = await utils.authorizeAdmin(req, res, next);
 
     if(!user) return;
 
@@ -33,26 +33,26 @@ adminController.addUser = async (req, res, next) => {
 }
 
 adminController.disableUser = async (req, res, next) => {
-    const user = await utils.authorizeAdmin(req, res);
+    const user = await utils.authorizeAdmin(req, res, next);
 
     if(!user) return;
 
     const userId = req.body.userId;
-    if (userId === undefined) return res.json({ success: false, description: 'No userid provided' });
+    if (userId === undefined) return next({ status: 401, message: 'No userid provided' });
 
     if (user.id == userId) 
-        return res.json({ success: false, description: 'You can\'t disable your own account' });
+        return next({ status: 401, message: 'You can\'t disable your own account' });
     await db.table('users').where('id', userId).update({ disabled: 1 });
 	return res.json({ success: true });
 }
 
 adminController.enableUser = async (req, res, next) => {
-    const user = await utils.authorizeAdmin(req, res);
+    const user = await utils.authorizeAdmin(req, res, next);
 
     if(!user) return;
-    
+
     const userId = req.body.userId;
-    if (userId === undefined) return res.json({ success: false, description: 'No userid provided' });
+    if (userId === undefined) return next({ status: 401, message: 'No userid provided' });
 
     await db.table('users').where('id', userId).update({ disabled: 0 });
 	return res.json({ success: true });

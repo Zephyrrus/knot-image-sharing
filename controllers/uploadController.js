@@ -44,10 +44,7 @@ uploadsController.upload = async (req, res, next) => {
 	if (albumid && user) {
 		const album = await db.table('albums').where({ id: albumid, userid: user.id }).first();
 		if (!album) {
-			return res.json({
-				success: false,
-				description: 'Album doesn\'t exist or it doesn\'t belong to the user'
-			});
+			return next({ status: 401, message: 'Album doesn\'t exist or it doesn\'t belong to the user' });
 		}
 		return uploadsController.actuallyUpload(req, res, user, albumid);
 	}
@@ -58,10 +55,10 @@ uploadsController.actuallyUpload = async (req, res, userid, album) => {
 	upload(req, res, async err => {
 		if (err) {
 			console.error(err);
-			return res.json({ success: false, description: err });
+			return next({ status: 401, message: err });
 		}
 
-		if (req.files.length === 0) return res.json({ success: false, description: 'no-files' });
+		if (req.files.length === 0) return next({ status: 401, message: 'no-files' });
 
 		const files = [];
 		const existingFiles = [];
@@ -153,18 +150,19 @@ uploadsController.processFilesForDisplay = async (req, res, files, existingFiles
 
 		if (file.albumid) {
 			db.table('albums').where('id', file.albumid).update('editedAt', file.timestamp).then(() => {})
-				.catch(error => { console.log(error); res.json({ success: false, description: 'Error updating album' }); });
+				.catch(error => { console.log(error); return next({ status: 401, message: 'Error updating album' }); });
 		}
 	}
 };
 
 uploadsController.delete = async (req, res) => {
-	const user = await utils.authorize(req, res);
+	const user = await utils.authorize(req, res, next);
+
 	if(!user) return;
-	
+
 	const id = req.body.id;
 	if (id === undefined || id === '') {
-		return res.json({ success: false, description: 'No file specified' });
+		return next({ status: 401, message: 'No file specified' });
 	}
 
 	const file = await db.table('files')
@@ -216,7 +214,7 @@ uploadsController.deleteFile = function(file) {
 };
 
 uploadsController.list = async (req, res) => {
-	const user = await utils.authorize(req, res);
+	const user = await utils.authorize(req, res, next);
 
 	if(!user) return;
 

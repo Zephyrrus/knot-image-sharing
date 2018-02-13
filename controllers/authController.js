@@ -10,44 +10,44 @@ authController.verify = async (req, res, next) => {
 	const username = req.body.username;
 	const password = req.body.password;
 
-	if (username === undefined) return res.json({ success: false, description: 'No username provided' });
-	if (password === undefined) return res.json({ success: false, description: 'No password provided' });
+	if (username === undefined) return next({ status: 401, message: 'No username provided' });
+	if (password === undefined) return next({ status: 401, message: 'No password provided' });
 
 	const user = await db.table('users').where('username', username).first();
-	if (!user) return res.json({ success: false, description: 'Invalid username or password' });
-	if (user.disabled) return res.json({ success: false, description: 'You have been banned from using this service' });
+	if (!user) return next({ status: 401, message: 'Invalid username or password' });
+	if (user.disabled) return next({ status: 401, message: 'You have been banned from using this service' });
 	bcrypt.compare(password, user.password, (err, result) => {
 		if (err) {
 			console.log(err);
-			return res.json({ success: false, description: 'There was an error' });
+			return next({ status: 401, message: 'There was an error' });
 		}
-		if (result === false) return res.json({ success: false, description: 'Invalid username or password' });
+		if (result === false) return next({ status: 401, message: 'Invalid username or password' });
 		return res.json({ success: true, token: user.token });
 	});
 };
 
 authController.register = async (req, res, next) => {
 	if (config.enableUserAccounts === false) {
-		return res.json({ success: false, description: 'Register is disabled at the moment' });
+		return next({ status: 401, message: 'Register is disabled at the moment' });
 	}
 
 	await authController._addUser(req, res, next);
 }
 
 authController.changePassword = async (req, res, next) => {
-	const user = await utils.authorize(req, res);
+	const user = await utils.authorize(req, res, next);
 
 	let password = req.body.password;
-	if (password === undefined) return res.json({ success: false, description: 'No password provided' });
+	if (password === undefined) return next({ status: 401, message: 'No password provided' });
 
 	if (password.length < 6 || password.length > 64) {
-		return res.json({ success: false, description: 'Password must have 6-64 characters' });
+		return next({ status: 401, message: 'Password must have 6-64 characters' });
 	}
 
 	bcrypt.hash(password, 10, async (err, hash) => {
 		if (err) {
 			console.log(err);
-			return res.json({ success: false, description: 'Error generating password hash (╯°□°）╯︵ ┻━┻' });
+			return next({ status: 401, message: 'Error generating password hash (╯°□°）╯︵ ┻━┻' });
 		}
 
 		await db.table('users').where('id', user.id).update({ password: hash });
@@ -60,23 +60,23 @@ authController._addUser = async (req, res, next) => {
 	const username = req.body.username;
 	const password = req.body.password;
 
-	if (username === undefined) return res.json({ success: false, description: 'No username provided' });
-	if (password === undefined) return res.json({ success: false, description: 'No password provided' });
+	if (username === undefined) return next({ status: 401, message: 'No username provided' });
+	if (password === undefined) return next({ status: 401, message: 'No password provided' });
 
 	if (username.length < 4 || username.length > 32) {
-		return res.json({ success: false, description: 'Username must have 4-32 characters' })
+		return next({ status: 401, message: 'Username must have 4-32 characters' })
 	}
 	if (password.length < 6 || password.length > 64) {
-		return res.json({ success: false, description: 'Password must have 6-64 characters' })
+		return next({ status: 401, message: 'Password must have 6-64 characters' })
 	}
 
 	const user = await db.table('users').where('username', username).first();
-	if (user) return res.json({ success: false, description: 'Username already exists' });
+	if (user) return next({ status: 401, message: 'Username already exists' });
 
 	bcrypt.hash(password, 10, async (err, hash) => {
 		if (err) {
 			console.log(err);
-			return res.json({ success: false, description: 'Error generating password hash (╯°□°）╯︵ ┻━┻' });
+			return next({ status: 401, message: 'Error generating password hash (╯°□°）╯︵ ┻━┻' });
 		}
 		const token = randomstring.generate(64);
 		await db.table('users').insert({

@@ -1,3 +1,12 @@
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
 let panel = {}
 
 panel.page;
@@ -201,7 +210,7 @@ panel.getUploads = function (album = undefined, page = undefined) {
 					tr.innerHTML = `
 					<tr>
 						<th><a href="${item.file}" target="_blank">${item.file}</a></th>
-						<th>${displayAlbumOrUser}</th>
+						<th>${escapeHtml(displayAlbumOrUser)}</th>
 						<td>${item.date}</td>
 						<td>
 							<a class="button is-small is-danger is-outlined" title="Delete album" onclick="panel.deleteFile(${item.id})">
@@ -258,8 +267,8 @@ panel.deleteFile = function (id) {
 
 				})
 				.catch(function (error) {
-					return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 					console.log(error);
+					return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 				});
 
 		}
@@ -309,7 +318,7 @@ panel.getAlbums = function () {
 				var tr = document.createElement('tr');
 				tr.innerHTML = `
 				<tr>
-					<th>${item.name}</th>
+					<th>${escapeHtml(item.name)}</th>
 					<th>${item.files}</th>
 					<td>${item.date}</td>
 					<td><a href="${item.identifier}" target="_blank">Album link</a></td>
@@ -337,8 +346,8 @@ panel.getAlbums = function () {
 
 		})
 		.catch(function (error) {
-			return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 			console.log(error);
+			return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 		});
 
 }
@@ -380,10 +389,9 @@ panel.renameAlbum = function (id) {
 
 			})
 			.catch(function (error) {
-				return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 				console.log(error);
+				return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 			});
-
 	});
 
 }
@@ -417,10 +425,9 @@ panel.deleteAlbum = function (id) {
 
 				})
 				.catch(function (error) {
-					return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 					console.log(error);
+					return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 				});
-
 		}
 	);
 
@@ -445,10 +452,9 @@ panel.submitAlbum = function () {
 
 		})
 		.catch(function (error) {
-			return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 			console.log(error);
+			return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 		});
-
 }
 
 panel.getAlbumsSidebar = function () {
@@ -483,10 +489,9 @@ panel.getAlbumsSidebar = function () {
 
 		})
 		.catch(function (error) {
-			return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 			console.log(error);
+			return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 		});
-
 }
 
 panel.getAlbum = function (item) {
@@ -524,10 +529,9 @@ panel.changeToken = function () {
 
 		})
 		.catch(function (error) {
-			return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 			console.log(error);
+			return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 		});
-
 }
 
 panel.getNewToken = function () {
@@ -551,10 +555,9 @@ panel.getNewToken = function () {
 
 		})
 		.catch(function (error) {
-			return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 			console.log(error);
+			return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 		});
-
 }
 
 panel.changePassword = function () {
@@ -614,8 +617,8 @@ panel.sendNewPassword = function (pass) {
 
 		})
 		.catch(function (error) {
-			return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 			console.log(error);
+			return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 		});
 }
 
@@ -665,7 +668,7 @@ panel.getUsers = function () {
 			content = `
 				<tr>
 					<th>${item.id}</th>
-					<th>${item.username}</th>
+					<th>${escapeHtml(item.username)}</th>
 					<td>${item.date}</td>
 					<td>${item.admin}</td>
 					<td>${item.disabled}</td>
@@ -699,8 +702,8 @@ panel.getUsers = function () {
 		});
 
 	}).catch(function (error) {
-		return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 		console.log(error);
+		return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 	});
 }
 
@@ -724,8 +727,8 @@ panel.enableUser = function(userId) {
 
 	})
 	.catch(function (error) {
-		return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 		console.log(error);
+		return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 	});
 }
 
@@ -749,8 +752,8 @@ panel.disableUser = function(userId) {
 
 	})
 	.catch(function (error) {
-		return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 		console.log(error);
+		return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 	});
 }
 
@@ -775,8 +778,8 @@ panel.addNewUser = function() {
 
 	})
 	.catch(function (error) {
-		return swal("An error ocurred", 'There was an error with the request, please check the console for more information.', "error");
 		console.log(error);
+		return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 	});
 }
 
