@@ -164,12 +164,12 @@ panel.getUploads = (album, page, element) => {
 		  <div class="column" style="text-align: center">
 			<a class="button is-small is-danger is-outlined" title="List view" onclick="panel.setFilesView('list', ${album}, ${page}, this)">
 			  <span class="icon is-small">
-				<i class="icon-th-list"></i>
+			  	<i class="fa fa-list-ul"></i>
 			  </span>
 			</a>
 			<a class="button is-small is-danger is-outlined" title="Thumbs view" onclick="panel.setFilesView('thumbs', ${album}, ${page}, this)">
 			  <span class="icon is-small">
-				<i class="icon-th-large"></i>
+			  	<i class="fa fa-th-large"></i>
 			  </span>
 			</a>
 		  </div>
