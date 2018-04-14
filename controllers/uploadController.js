@@ -9,12 +9,24 @@ const utils = require('./utilsController.js');
 
 const uploadsController = {};
 
+const maxTries = config.uploads.maxTries || 2;
+const uploadDir = path.join(__dirname, '..', config.uploads.folder);
+
 const storage = multer.diskStorage({
 	destination: function(req, file, cb) {
-		cb(null, path.join(__dirname, '..', config.uploads.folder));
+		cb(null, uploadDir);
 	},
-	filename: function(req, file, cb) {
-		cb(null, randomstring.generate(config.uploads.fileLength) + path.extname(file.originalname));
+  	filename: function(req, file, cb) {
+		const access = i => {
+			const name = randomstring.generate(config.uploads.fileLength) + path.extname(file.originalname);
+			fs.access(path.join(uploadDir, name), err => {
+				if (err) return cb(null, name);
+				console.log(`A file named "${name}" already exists (${++i}/${maxTries}).`);
+				if (i < maxTries) return access(i);
+				return cb('Could not allocate a unique file name. Try again?');
+			});
+		};
+		access(0);
 	}
 });
 
@@ -34,7 +46,7 @@ const upload = multer({
 
 uploadsController.upload = async (req, res, next) => {
 	if (config.private === true) {
-		await utils.authorize(req, res);
+		await utils.authorize(req, res, next);
 	}
 
 	const token = req.headers.token || '';
@@ -44,7 +56,7 @@ uploadsController.upload = async (req, res, next) => {
 	if (albumid && user) {
 		const album = await db.table('albums').where({ id: albumid, userid: user.id }).first();
 		if (!album) {
-			return next({ status: 401, message: 'Album doesn\'t exist or it doesn\'t belong to the user' });
+			return next({ status: 400, message: 'Album doesn\'t exist or it doesn\'t belong to the user' });
 		}
 		return uploadsController.actuallyUpload(req, res, user, albumid);
 	}
@@ -99,7 +111,7 @@ uploadsController.actuallyUpload = async (req, res, userid, album) => {
 						timestamp: Math.floor(Date.now() / 1000)
 					});
 				} else {
-					uploadsController.deleteFile(file.filename).then(() => {}).catch(err => console.error(err));
+					utils.deleteFile(file.filename).then(() => {}).catch(err => console.error(err));
 					existingFiles.push(dbFile);
 				}
 
@@ -168,14 +180,14 @@ uploadsController.delete = async (req, res, next) => {
 	const file = await db.table('files')
 		.where('id', id)
 		.where(function() {
-			if (user.username !== 'root') {
-				this.where('userid', user.id);
-			}
+			if (!user.admin) this.where('userid', user.id);
 		})
 		.first();
-
 	try {
-		await uploadsController.deleteFile(file.name);
+		await utils.deleteFile(file.name).catch(error => {
+			// ENOENT is missing file, for whatever reason, then just delete from db anyways
+			if (error.code !== 'ENOENT') { throw error }
+		  })
 		await db.table('files').where('id', id).del();
 		if (file.albumid) {
 			await db.table('albums').where('id', file.albumid).update('editedAt', Math.floor(Date.now() / 1000));
@@ -187,31 +199,28 @@ uploadsController.delete = async (req, res, next) => {
 	return res.json({ success: true });
 };
 
-uploadsController.deleteFile = function(file) {
-	const ext = path.extname(file).toLowerCase();
-	return new Promise((resolve, reject) => {
-		fs.stat(path.join(__dirname, '..', config.uploads.folder, file), (err, stats) => {
-			if (err) { return reject(err); }
-			fs.unlink(path.join(__dirname, '..', config.uploads.folder, file), err => {
-				if (err) { return reject(err); }
-				if (!utils.imageExtensions.includes(ext) && !utils.videoExtensions.includes(ext)) {
-					return resolve();
-				}
-				file = file.substr(0, file.lastIndexOf('.')) + '.png';
-				fs.stat(path.join(__dirname, '..', config.uploads.folder, 'thumbs/', file), (err, stats) => {
-					if (err) {
-						console.log(err);
-						return resolve();
-					}
-					fs.unlink(path.join(__dirname, '..', config.uploads.folder, 'thumbs/', file), err => {
-						if (err) { return reject(err); }
-						return resolve();
-					});
-				});
-			});
-		});
-	});
-};
+uploadsController.bulkDelete = async (req, res, next) => {
+	const user = await utils.authorize(req, res, next)
+	if (!user) { return }
+	const ids = req.body.ids
+	if (ids === undefined || !ids.length) {
+	  return res.json({ success: false, description: 'No files specified.' })
+	}
+  
+	const failedids = await utils.bulkDeleteFilesByIds(ids, user)
+	if (failedids.length < ids.length) {
+	  return res.json({
+		success: true,
+		failedids
+	  })
+	}
+  
+	return res.json({
+	  success: false,
+	  description: 'Could not delete any of the selected files.'
+	})
+  }
+  
 
 uploadsController.list = async (req, res, next) => {
 	const user = await utils.authorize(req, res, next);
@@ -232,7 +241,7 @@ uploadsController.list = async (req, res, next) => {
 		.orderBy('id', 'DESC')
 		.limit(25)
 		.offset(25 * offset)
-		.select('id', 'albumid', 'timestamp', 'name', 'userid');
+		.select('id', 'albumid', 'timestamp', 'name', 'userid', 'size');
 
 	const albums = await db.table('albums');
 	let basedomain = config.domain;
@@ -242,6 +251,7 @@ uploadsController.list = async (req, res, next) => {
 		file.file = `${basedomain}/${file.name}`;
 		file.date = new Date(file.timestamp * 1000);
 		file.date = utils.getPrettyDate(file.date);
+		file.size = utils.getPrettyBytes(parseInt(file.size))
 
 		file.album = '';
 

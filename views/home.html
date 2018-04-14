@@ -29,15 +29,26 @@
             </div>
 
             <div id="uploads">
-                <div id="template" class="columns">
+                <div id="template" class="columns is-gapless">
                     <div class="column is-hidden-mobile"></div>
                     <div class="column">
-                        <progress class="progress is-small is-danger" value="0" max="100" data-dz-uploadprogress></progress>
-                        <p data-dz-errormessage></p>
-                        <p class="link"></p>
+                      <progress class="progress is-small is-danger" value="0" max="100"></progress>
+                      <img class="is-unselectable" data-dz-thumbnail>
+                      <p class="error"></p>
+                      <p class="link" style="display: none">
+                        <a target="_blank"></a>
+                      </p>
+                      <p class="clipboard-mobile is-hidden-desktop" style="display: none">
+                        <a class="button is-info is-outlined clipboard-js" style="display: flex">
+                        <span class="icon">
+                          <i class="icon-clipboard-1"></i>
+                        </span>
+                        <span>Copy link to clipboard</span>
+                      </a>
+                      </p>
                     </div>
                     <div class="column is-hidden-mobile"></div>
-                </div>
+                  </div>
             </div>
 
             <h3 class="subtitle"><a href="/auth" id="loginLinkText"></a></h3>

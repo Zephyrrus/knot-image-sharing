@@ -62,6 +62,16 @@
         </div>
 
     </section>
+
+    <div id="modal" class="modal">
+        <div class="modal-background" onclick="panel.closeModal()"></div>
+        <div class="modal-content">
+          <figure class="image">
+            <img id="modalImage">
+          </figure>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="panel.closeModal()"></button>
+    </div>
 {% endblock %}
 
 {% block footer %}

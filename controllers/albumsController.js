@@ -187,4 +187,79 @@ albumsController.generateZip = async (req, res, next) => {
 	}
 };
 
+albumsController.addFiles = async (req, res, next) => {
+	const user = await utils.authorize(req, res, next)
+	if (!user) { return }
+  
+	const ids = req.body.ids
+	if (ids === undefined || !ids.length) {
+	  return res.json({ success: false, description: 'No files specified.' })
+	}
+  
+	let albumid = req.body.albumid
+	if (typeof albumid !== 'number') { albumid = parseInt(albumid) }
+	if (isNaN(albumid) || (albumid < 0)) { albumid = null }
+  
+	const albumids = []
+  
+	if (albumid !== null) {
+	  const album = await db.table('albums')
+		.where({
+		  id: albumid,
+		  userid: user.id
+		})
+		.first()
+  
+	  if (!album) {
+		return res.json({
+		  success: false,
+		  description: 'Album doesn\'t exist or it doesn\'t belong to the user.'
+		})
+	  }
+  
+	  albumids.push(albumid)
+	}
+  
+	const files = await db.table('files')
+	  .whereIn('id', ids)
+	  .where(function () {
+		if (user.username !== 'root') {
+		  this.where('userid', user.id)
+		}
+	  })
+  
+	const failedids = ids.filter(id => !files.find(file => file.id === id))
+  
+	await Promise.all(files.map(file => {
+	  if (file.albumid && !albumids.includes(file.albumid)) {
+		albumids.push(file.albumid)
+	  }
+  
+	  return db.table('files')
+		.where('id', file.id)
+		.update('albumid', albumid)
+		.catch(error => {
+		  console.error(error)
+		  failedids.push(file.id)
+		})
+	}))
+  
+	if (failedids.length < ids.length) {
+	  await Promise.all(albumids.map(albumid => {
+		return db.table('albums')
+		  .where('id', albumid)
+		  .update('editedAt', Math.floor(Date.now() / 1000))
+	  }))
+	  return res.json({
+		success: true,
+		failedids
+	  })
+	}
+  
+	return res.json({
+	  success: false,
+	  description: `Could not ${albumid === null ? 'add' : 'remove'} any of the selected files ${albumid === null ? 'to' : 'from'} the album.`
+	})
+  }
+
 module.exports = albumsController;

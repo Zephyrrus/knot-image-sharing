@@ -109,7 +109,18 @@ section#home #b {
 	text-align: center;
 	margin-bottom: 10px;
   }
-  
+	
+	#linksColumn {
+		margin-left: -0.25rem;
+		margin-right: -0.25rem;
+	}
+	
+	#linksColumn .column {
+		padding-left: 0.25rem;
+		padding-right: 0.25rem;
+	}
+
+	
   /** Colors based on KDE Breeze Dark **/
   
   .hero {

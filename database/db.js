@@ -1,4 +1,4 @@
-let init = function(db){
+let init = function (db) {
 
 	// Create the tables we need to store galleries and files
 	db.schema.createTableIfNotExists('albums', function (table) {
@@ -34,11 +34,13 @@ let init = function(db){
 		table.integer('admin').defaultTo(0)
 		table.integer('disabled').defaultTo(0)
 	}).then(() => {
-		db.table('users').where({username: 'root'}).then((user) => {
-			if(user.length > 0) return
+		db.table('users').where({
+			username: 'root'
+		}).then((user) => {
+			if (user.length > 0) return
 
-			require('bcrypt').hash('root', 10, function(err, hash) {
-				if(err) console.error('Error generating password hash for root')
+			require('bcrypt').hash('root', 10, function (err, hash) {
+				if (err) console.error('Error generating password hash for root')
 
 				db.table('users').insert({
 					username: 'root',

@@ -21,6 +21,7 @@ routes.get('/uploads', (req, res, next) => uploadController.list(req, res, next)
 routes.get('/uploads/:page', (req, res, next) => uploadController.list(req, res, next));
 routes.post('/upload', (req, res, next) => uploadController.upload(req, res, next));
 routes.post('/upload/delete', (req, res, next) => uploadController.delete(req, res, next));
+routes.post('/upload/bulkdelete', (req, res, next) => uploadController.bulkDelete(req, res, next));
 routes.post('/upload/:albumid', (req, res, next) => uploadController.upload(req, res, next));
 
 routes.get('/album/get/:identifier', (req, res, next) => albumsController.get(req, res, next));
@@ -32,6 +33,7 @@ routes.get('/albums/:sidebar', (req, res, next) => albumsController.list(req, re
 routes.post('/albums', (req, res, next) => albumsController.create(req, res, next));
 routes.post('/albums/delete', (req, res, next) => albumsController.delete(req, res, next));
 routes.post('/albums/rename', (req, res, next) => albumsController.rename(req, res, next));
+routes.post('/albums/addfiles', (req, res, next) => albumsController.addFiles(req, res, next))
 
 routes.get('/tokens', (req, res, next) => tokenController.list(req, res, next));
 routes.post('/tokens/verify', (req, res, next) => tokenController.verify(req, res, next));
