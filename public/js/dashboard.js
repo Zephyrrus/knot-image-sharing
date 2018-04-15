@@ -1163,7 +1163,7 @@ panel.enableUser = function (userId) {
 				title: "OwO!",
 				text: 'User was enabled!',
 				type: "success"
-			}.then(function () {
+			}).then(function () {
 				location.reload();
 			})
 
@@ -1188,7 +1188,7 @@ panel.disableUser = function (userId) {
 				title: "Woohoo!",
 				text: 'User was disabled!',
 				type: "warning"
-			}.then(function () {
+			}).then(function () {
 				location.reload();
 			})
 
@@ -1214,7 +1214,7 @@ panel.addNewUser = function () {
 				title: "Woohoo!",
 				text: 'User was added!',
 				type: "success"
-			}.then(function () {
+			}).then(function () {
 				location.reload();
 			})
 
