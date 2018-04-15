@@ -808,13 +808,12 @@ panel.renameAlbum = function (id) {
 		closeOnConfirm: false,
 		animation: "slide-from-top",
 		inputPlaceholder: "My super album"
-	}, function (inputValue) {
+	}).then(inputValue => {
 		if (inputValue === false) return false;
 		if (inputValue === "") {
 			swal.showInputError("You need to write something!");
 			return false
 		}
-
 		axios.post('/api/albums/rename', {
 				id: id,
 				name: inputValue
@@ -839,48 +838,43 @@ panel.renameAlbum = function (id) {
 				return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
 			});
 	});
-
 }
 
 panel.deleteAlbum = function (id) {
 	swal({
-			title: "Are you sure?",
-			text: "This won't delete your files, only the album!",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#ff3860",
-			confirmButtonText: "Yes, delete it!",
-			closeOnConfirm: false
-		},
-		function () {
+		title: "Are you sure?",
+		text: "This won't delete your files, only the album!",
+		type: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#ff3860",
+		confirmButtonText: "Yes, delete it!",
+		closeOnConfirm: false
+	}).then(() => {
+		axios.post('/api/albums/delete', {
+				id: id
+			})
+			.then(function (response) {
 
-			axios.post('/api/albums/delete', {
-					id: id
-				})
-				.then(function (response) {
+				if (response.data.success === false) {
+					if (response.data.description === 'No token provided') return panel.verifyToken(panel.token);
+					else return swal("An error ocurred", response.data.description, "error");
+				}
 
-					if (response.data.success === false) {
-						if (response.data.description === 'No token provided') return panel.verifyToken(panel.token);
-						else return swal("An error ocurred", response.data.description, "error");
-					}
+				swal("Deleted!", "Your album has been deleted.", "success");
+				panel.getAlbumsSidebar();
+				panel.getAlbums();
+				return;
 
-					swal("Deleted!", "Your album has been deleted.", "success");
-					panel.getAlbumsSidebar();
-					panel.getAlbums();
-					return;
-
-				})
-				.catch(function (error) {
-					console.log(error);
-					return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
-				});
-		}
-	);
+			})
+			.catch(function (error) {
+				console.log(error);
+				return swal('An error ocurred', 'There was an error with the request, please check the console for more information.', 'error');
+			});
+	});
 
 }
 
 panel.submitAlbum = function () {
-
 	axios.post('/api/albums', {
 			name: document.getElementById('albumName').value
 		})
@@ -994,7 +988,7 @@ panel.getNewToken = function () {
 				title: "Woohoo!",
 				text: 'Your token was changed successfully.',
 				type: "success"
-			}, function () {
+			}).then(() => {
 				localStorage.token = response.data.token;
 				location.reload();
 			})
@@ -1035,7 +1029,7 @@ panel.changePassword = function () {
 				title: "Password mismatch!",
 				text: 'Your passwords do not match, please try again.',
 				type: "error"
-			}, function () {
+			}).then(() => {
 				panel.changePassword();
 			});
 		}
@@ -1057,10 +1051,9 @@ panel.sendNewPassword = function (pass) {
 				title: "Woohoo!",
 				text: 'Your password was changed successfully.',
 				type: "success"
-			}, function () {
+			}).then(function () {
 				location.reload();
-			})
-
+			});
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -1170,7 +1163,7 @@ panel.enableUser = function (userId) {
 				title: "OwO!",
 				text: 'User was enabled!',
 				type: "success"
-			}, function () {
+			}.then(function () {
 				location.reload();
 			})
 
@@ -1195,7 +1188,7 @@ panel.disableUser = function (userId) {
 				title: "Woohoo!",
 				text: 'User was disabled!',
 				type: "warning"
-			}, function () {
+			}.then(function () {
 				location.reload();
 			})
 
@@ -1221,7 +1214,7 @@ panel.addNewUser = function () {
 				title: "Woohoo!",
 				text: 'User was added!',
 				type: "success"
-			}, function () {
+			}.then(function () {
 				location.reload();
 			})
 

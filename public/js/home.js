@@ -246,12 +246,12 @@ window.onload = function () {
 
 	upload.clipboardJS = new ClipboardJS('.clipboard-js')
 
-	/*upload.clipboardJS.on('success', () => {
+	upload.clipboardJS.on('success', () => {
 		return swal('Copied!', 'The link has been copied to clipboard.', 'success')
 	})
 
 	upload.clipboardJS.on('error', event => {
 		console.error(event)
 		return swal('An error occurred!', 'There was an error when trying to copy the link to clipboard, please check the console for more information.', 'error')
-	})*/
+	})
 };
