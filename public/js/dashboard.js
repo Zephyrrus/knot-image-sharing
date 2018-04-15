@@ -801,15 +801,23 @@ panel.getAlbums = function () {
 panel.renameAlbum = function (id) {
 
 	swal({
-		title: "Rename album",
-		text: "New name you want to give the album:",
-		type: "input",
-		showCancelButton: true,
-		closeOnConfirm: false,
-		animation: "slide-from-top",
-		inputPlaceholder: "My super album"
+		title: 'Rename album',
+		text: 'New name you want to give the album:',
+		icon: 'info',
+		content: {
+			element: 'input',
+			attributes: {
+				placeholder: 'My super album'
+			}
+		},
+		buttons: {
+			cancel: true,
+			confirm: {
+				closeModal: false
+			}
+		}
 	}).then(inputValue => {
-		if (inputValue === false) return false;
+		if (!inputValue) { return swal.close() }
 		if (inputValue === "") {
 			swal.showInputError("You need to write something!");
 			return false
