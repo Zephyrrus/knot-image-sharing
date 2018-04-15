@@ -165,27 +165,21 @@ upload.prepareDropzone = function () {
 		if (!response) {
 			return
 		}
-		// Handle the responseText here. For example, add the text to the preview element:
+		file.previewTemplate.querySelector('.progress').style.display = 'none'
 
-		/*if (response.success === false) {
-			var span = document.createElement('span');
-			span.innerHTML = response.description;
-			file.previewTemplate.querySelector('.link').appendChild(span);
-			return;
-		}*/
+		if (response.success === false) {
+			file.previewTemplate.querySelector('.error').innerHTML = response.description
+		}
+
 		if (response.files && response.files[0] && response.files[0].url) {
 			upload.appendLink(file, response.files[0].url)
 			upload.showThumbnail(file, response.files[0].url)
 		}
-
-		file.previewTemplate.querySelector('.progress').style.display = 'none';
-
-	});
+	})
 
 	upload.dropzone.on('error', (file, error) => {
-		var span = document.createElement('span');
-		span.innerHTML = response.description;
-		file.previewTemplate.querySelector('.link').appendChild(span);
+		file.previewTemplate.querySelector('.progress').style.display = 'none'
+		file.previewTemplate.querySelector('.error').innerHTML = error
 	})
 
 	upload.prepareShareX();
